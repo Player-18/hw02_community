@@ -1,13 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
 
-from .models import Post, Group
+from .models import Group, Post
+
 
 def index(request):
-# одна строка вместо тысячи слов на SQL
-    latest = Post.objects.order_by('-pub_date')[:11]
+    latest = Post.objects.all()[:11]
     return render(request, "index.html", {"posts": latest})
+
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    posts = Post.objects.filter(group=group).order_by("-pub_date")[:12]
-    return render(request, "group.html", {"group": group, "posts": posts}) 
+    posts = group.posts.all()
+    return render(request, "group.html", {"group": group, "posts": posts})
